@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Movie;
+use App\Entity\Quote;
 use App\Repository\MovieRepository;
 use App\Repository\QuoteRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -42,5 +43,16 @@ class MovieController extends AbstractController
         return $this->render('movie/quotes.html.twig', [
             'quotes' => $quotes,
         ]);
+
+    }
+
+    #[Route('/quote/delete/{id}', name: 'app_quote_delete')]
+    public function delete(Quote $quote, ManagerRegistry $mr): Response
+    {
+        $em = $mr->getManager();
+        $em->remove($quote);
+        $em->flush();
+
+        return $this->redirectToRoute('app_quotes');
     }
 }

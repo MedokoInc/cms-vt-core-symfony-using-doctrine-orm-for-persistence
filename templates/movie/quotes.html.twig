@@ -11,8 +11,13 @@
 <div class="example-wrapper">
     <h1>Quotes</h1>
 
-    {% for quote in quotes %}
-        <h2>{{ quote.text }}</h2>
+    {% for quote in quotes|sort((a, b) => a.movie.name <=> b.movie.name) %}
+        <h3>{{ quote.movie.name }}</h3>
+        <p>{{ quote.movie.release |date('Y-m-d')}}</p>
+        <p>{{ quote.text }}</p>
+        <p>{{ quote.character }}</p>
+
+        <input type="button" onclick="location.href='{{ path('/quote/delete', {'id': quote.id}, true) }}';" value="Edit" />
     {% endfor %}
 </div>
 {% endblock %}

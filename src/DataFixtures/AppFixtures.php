@@ -13,7 +13,7 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 20; $i > 0; $i--) {
             $movie = new Movie();
             $movie->setName('Movie '.$i);
 
@@ -36,6 +36,7 @@ class AppFixtures extends Fixture
                 $quote = new Quote();
                 $quote->setText('Quote '.$i);
                 $quote->setMovie($movie);
+                $quote->setCharacter('Character '.$i);
                 $manager->persist($quote);
             }
         }
