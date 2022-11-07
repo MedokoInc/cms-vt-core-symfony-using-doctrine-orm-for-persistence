@@ -28,6 +28,7 @@ class Movie
     public function __construct()
     {
         $this->quotes = new ArrayCollection();
+
     }
 
     public function getId(): ?int
