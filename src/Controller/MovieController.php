@@ -55,4 +55,16 @@ class MovieController extends AbstractController
 
         return $this->redirectToRoute('app_quotes');
     }
+
+    #[Route('/quotes/{search}', name: 'app_quotes_search')]
+    public function showQuotes(QuoteRepository $qr, String $search): Response
+    {
+        $quotes = $this->getDoctrine()
+            ->getRepository(Quote::class)
+            ->where('q.text LIKE %:search%');
+
+        return $this->render('movie/quotes.html.twig', [
+            'quotes' => $quotes,
+        ]);
+    }
 }
