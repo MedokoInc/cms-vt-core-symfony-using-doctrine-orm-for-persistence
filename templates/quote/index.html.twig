@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Quote index{% endblock %}
+
+{% block body %}
+    <h1>Quote index</h1>
+
+    <form action="{{ path('app_quote_index') }}" method="get">
+        <input type="search" name="search" value="{{ search }}" placeholder="Search for quotes...">
+        <button type="submit">Search</button>
+    </form>
+
+    <a href="{{ path('app_quote_random') }}">Random quote</a>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Movie</th>
+                <th>Release</th>
+                <th>Id</th>
+                <th>Text</th>
+                <th>Character</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for quote in quotes %}
+            <tr>
+                <td>{{ quote.movie.name }}</td>
+                <td>{{ quote.movie.release |date('d.m.Y')}}</td>
+                <td>{{ quote.id }}</td>
+                <td>{{ quote.text }}</td>
+                <td>{{ quote.character }}</td>
+                <td>
+                    <a href="{{ path('app_quote_show', {'id': quote.id}) }}">show</a>
+                    <a href="{{ path('app_quote_edit', {'id': quote.id}) }}">edit</a>
+                    {{ include('quote/_delete_form.html.twig') }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_quote_new') }}">Create new</a>
+    <a href="{{ path('app_movie_new') }}">Create new Movie</a>
+{% endblock %}

@@ -89,4 +89,9 @@ class Movie
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->name . ' (' . $this->release->format('d.m.Y') . ')';
+    }
 }

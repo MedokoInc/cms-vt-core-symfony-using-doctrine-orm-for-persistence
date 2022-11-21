@@ -3,30 +3,44 @@
 namespace App\Controller;
 
 use App\Entity\Movie;
-use App\Entity\Quote;
+use App\Form\MovieType;
 use App\Repository\MovieRepository;
-use App\Repository\QuoteRepository;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/movie')]
 class MovieController extends AbstractController
 {
-    #[Route('/movies', name: 'app_movie')]
-    public function index(MovieRepository $mr, QuoteRepository $qr): Response
+    #[Route('/', name: 'app_movie_index', methods: ['GET'])]
+    public function index(MovieRepository $movieRepository): Response
     {
-        //return all movies with their relating quotes
-        $movies = $mr->findAll();
-        $quotes = $qr->findAll();
-
         return $this->render('movie/index.html.twig', [
-            'movies' => $movies,
-            'quotes' => $quotes,
+            'movies' => $movieRepository->findAll(),
         ]);
     }
 
-    #[Route('/movie/{id}', name: 'app_movie_show')]
+    #[Route('/new', name: 'app_movie_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, MovieRepository $movieRepository): Response
+    {
+        $movie = new Movie();
+        $form = $this->createForm(MovieType::class, $movie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $movieRepository->save($movie, true);
+
+            return $this->redirectToRoute('app_movie_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('movie/new.html.twig', [
+            'movie' => $movie,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_movie_show', methods: ['GET'])]
     public function show(Movie $movie): Response
     {
         return $this->render('movie/show.html.twig', [
@@ -34,37 +48,31 @@ class MovieController extends AbstractController
         ]);
     }
 
-    #[Route('/quotes', name: 'app_quotes')]
-    public function quotes(QuoteRepository $qr): Response
+    #[Route('/{id}/edit', name: 'app_movie_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Movie $movie, MovieRepository $movieRepository): Response
     {
-        //return all quotes with their relating movies
-        $quotes = $qr->findAll();
+        $form = $this->createForm(MovieType::class, $movie);
+        $form->handleRequest($request);
 
-        return $this->render('movie/quotes.html.twig', [
-            'quotes' => $quotes,
+        if ($form->isSubmitted() && $form->isValid()) {
+            $movieRepository->save($movie, true);
+
+            return $this->redirectToRoute('app_movie_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('movie/edit.html.twig', [
+            'movie' => $movie,
+            'form' => $form,
         ]);
-
     }
 
-    #[Route('/quote/delete/{id}', name: 'app_quote_delete')]
-    public function delete(Quote $quote, ManagerRegistry $mr): Response
+    #[Route('/{id}', name: 'app_movie_delete', methods: ['POST'])]
+    public function delete(Request $request, Movie $movie, MovieRepository $movieRepository): Response
     {
-        $em = $mr->getManager();
-        $em->remove($quote);
-        $em->flush();
+        if ($this->isCsrfTokenValid('delete'.$movie->getId(), $request->request->get('_token'))) {
+            $movieRepository->remove($movie, true);
+        }
 
-        return $this->redirectToRoute('app_quotes');
-    }
-
-    #[Route('/quotes/{search}', name: 'app_quotes_search')]
-    public function showQuotes(QuoteRepository $qr, String $search): Response
-    {
-        $quotes = $this->getDoctrine()
-            ->getRepository(Quote::class)
-            ->where('q.text LIKE %:search%');
-
-        return $this->render('movie/quotes.html.twig', [
-            'quotes' => $quotes,
-        ]);
+        return $this->redirectToRoute('app_movie_index', [], Response::HTTP_SEE_OTHER);
     }
 }

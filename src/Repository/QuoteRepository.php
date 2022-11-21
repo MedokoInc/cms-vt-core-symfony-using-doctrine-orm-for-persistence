@@ -39,6 +39,16 @@ class QuoteRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAllByText(String $search): array
+    {
+        $qb = $this->createQueryBuilder('q');
+        $qb->where('q.text LIKE :search')
+            ->setParameter('search', '%'.$search.'%')
+            ->orderBy('q.text', 'ASC');
+
+        return $qb->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return Quote[] Returns an array of Quote objects
 //     */
