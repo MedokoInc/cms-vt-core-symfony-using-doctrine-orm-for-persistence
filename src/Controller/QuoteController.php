@@ -45,12 +45,33 @@ class QuoteController extends AbstractController
         ]);
     }
 
+    #[Route('/rnd', name: 'app_quote_random', methods: ['GET'])]
+    public function random(Request $request, QuoteRepository $quoteRepository): Response
+    {
+        $rnd = rand(0, $quoteRepository->count([])-1);
+        //get array of all ids
+        $ids = $quoteRepository->findAll();
+        //get random id
+        $rndId = $ids[$rnd]->getId();
+        return $this->redirectToRoute('app_quote_show', ['id' => $rndId], Response::HTTP_SEE_OTHER);
+    }
+
     #[Route('/{id}', name: 'app_quote_show', methods: ['GET'])]
     public function show(Quote $quote): Response
     {
         return $this->render('quote/show.html.twig', [
             'quote' => $quote,
         ]);
+    }
+
+    #[Route('/{id}', name: 'app_quote_delete', methods: ['POST'])]
+    public function delete(Request $request, Quote $quote, QuoteRepository $quoteRepository): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$quote->getId(), $request->request->get('_token'))) {
+            $quoteRepository->remove($quote, true);
+        }
+
+        return $this->redirectToRoute('app_quote_index', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/{id}/edit', name: 'app_quote_edit', methods: ['GET', 'POST'])]
@@ -69,22 +90,5 @@ class QuoteController extends AbstractController
             'quote' => $quote,
             'form' => $form,
         ]);
-    }
-
-    #[Route('/{id}', name: 'app_quote_delete', methods: ['POST'])]
-    public function delete(Request $request, Quote $quote, QuoteRepository $quoteRepository): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$quote->getId(), $request->request->get('_token'))) {
-            $quoteRepository->remove($quote, true);
-        }
-
-        return $this->redirectToRoute('app_quote_index', [], Response::HTTP_SEE_OTHER);
-    }
-
-    #[Route('/rnd', name: 'app_quote_random', methods: ['GET'])]
-    public function random(Request $request, QuoteRepository $quoteRepository): Response
-    {
-        $id = rand(1, $quoteRepository->count([]));
-        return $this->redirectToRoute('app_quote_show', ['id' => $id], Response::HTTP_SEE_OTHER);
     }
 }
