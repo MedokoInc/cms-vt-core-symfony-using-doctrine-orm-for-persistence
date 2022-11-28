@@ -69,10 +69,19 @@ class MovieController extends AbstractController
     #[Route('/{id}', name: 'app_movie_delete', methods: ['POST'])]
     public function delete(Request $request, Movie $movie, MovieRepository $movieRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$movie->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $movie->getId(), $request->request->get('_token'))) {
             $movieRepository->remove($movie, true);
         }
 
         return $this->redirectToRoute('app_movie_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/quotes', name: 'app_movie_quotes', methods: ['GET'])]
+    public function quotes(Movie $movie): Response
+    {
+        return $this->render('movie/quotes.html.twig', [
+            'movie' => $movie,
+            'quotes' => $movie->getQuotes(),
+        ]);
     }
 }

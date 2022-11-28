@@ -40,6 +40,17 @@ class AppFixtures extends Fixture
                 $manager->persist($quote);
             }
         }
+        $movie = new Movie();
+        $movie->setName('Pulp Fiction');
+        $movie->setRelease(new DateTime('1994-10-14'));
+        $manager->persist($movie);
+        $manager->flush();
+
+        $quote = new Quote();
+        $quote->setText('Amerikaner ');
+        $quote->setMovie($movie);
+        $quote->setCharacter('Bruce Willis ');
+        $manager->persist($quote);
         $manager->flush();
     }
 }

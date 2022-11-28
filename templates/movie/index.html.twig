@@ -23,7 +23,8 @@
                 <td>
                     <a href="{{ path('app_movie_show', {'id': movie.id}) }}">show</a>
                     <a href="{{ path('app_movie_edit', {'id': movie.id}) }}">edit</a>
-                    <a href="{{ path('app_login') }}">Login</a>
+                    <a href="{{ path('app_movie_quotes', {'id': movie.id}) }}">show quotes</a>
+
                 </td>
             </tr>
         {% else %}
@@ -35,4 +36,7 @@
     </table>
 
     <a href="{{ path('app_movie_new') }}">Create new</a>
+    <a href="{{ path('app_login') }}">Login</a>
+    <a href=" {{ path('app_quote_index') }}">Switch to Quotes</a>
+
 {% endblock %}
