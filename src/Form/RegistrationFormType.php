@@ -27,7 +27,7 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
             ->add('isAdmin', CheckboxType::class, [
-                'mapped' => false,
+                'mapped' => false
             ])
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
