@@ -82,6 +82,7 @@ class MovieController extends AbstractController
         return $this->render('movie/quotes.html.twig', [
             'movie' => $movie,
             'quotes' => $movie->getQuotes(),
+            'cat_count' => $movie->getCatCount(),
         ]);
     }
 }

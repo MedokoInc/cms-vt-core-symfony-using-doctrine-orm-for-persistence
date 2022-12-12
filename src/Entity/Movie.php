@@ -25,6 +25,9 @@ class Movie
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Quote::class, orphanRemoval: true)]
     private Collection $quotes;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $cat_count = null;
+
     public function __construct()
     {
         $this->quotes = new ArrayCollection();
@@ -93,5 +96,17 @@ class Movie
     public function __toString(): string
     {
         return $this->name . ' (' . $this->release->format('d.m.Y') . ')';
+    }
+
+    public function getCatCount(): ?int
+    {
+        return $this->cat_count;
+    }
+
+    public function setCatCount(?int $cat_count): self
+    {
+        $this->cat_count = $cat_count;
+
+        return $this;
     }
 }

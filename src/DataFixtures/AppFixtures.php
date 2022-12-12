@@ -52,5 +52,6 @@ class AppFixtures extends Fixture
         $quote->setCharacter('Bruce Willis ');
         $manager->persist($quote);
         $manager->flush();
+
     }
 }
