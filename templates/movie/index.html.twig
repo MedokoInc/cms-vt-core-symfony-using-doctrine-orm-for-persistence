@@ -11,6 +11,7 @@
                 <th>Id</th>
                 <th>Name</th>
                 <th>Release</th>
+                <th>cat-count</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -20,6 +21,7 @@
                 <td>{{ movie.id }}</td>
                 <td>{{ movie.name }}</td>
                 <td>{{ movie.release ? movie.release|date('Y-m-d') : '' }}</td>
+                <td>{{ movie.catCount }}</td>
                 <td>
                     <a href="{{ path('app_movie_show', {'id': movie.id}) }}">show</a>
                     <a href="{{ path('app_movie_edit', {'id': movie.id}) }}">edit</a>
