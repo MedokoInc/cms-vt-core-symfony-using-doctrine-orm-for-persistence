@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 class Movie
@@ -108,5 +109,22 @@ class Movie
         $this->cat_count = $cat_count;
 
         return $this;
+    }
+
+    #[Assert\IsTrue(message: 'Name must be even number of letters and each letter must be repeated twice')]
+    private function isValidName(): bool
+    {
+        $res = strtolower($this->name);
+        if(strlen($res) % 2 !== 0) {
+            return false;
+        }
+        $res = str_split($res);
+        $res = array_count_values($res);
+        foreach($res as $letter => $count) {
+            if($count !== 2) {
+                return false;
+            }
+        }
+        return true;
     }
 }
